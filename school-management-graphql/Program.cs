@@ -1,11 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
+using school_management_graphql.GraphQL.Mutations;
+using school_management_graphql.GraphQL.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+/*builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<ISchoolRoomService, SchoolRoomService>();
+builder.Services.AddScoped<IEquipmentService, EquipmentService>();
+builder.Services.AddScoped<IFurnitureService, FurnitureService>();
+builder.Services.AddScoped<IStudentService, StudentService>();*/
+
+builder.Services
+ .AddGraphQLServer()
+ .AddQueryType<Query>()
+ .AddMutationType<Mutation>();
 // Add services to the container.
 
 //builder.Services.AddControllers();
@@ -24,8 +37,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
-app.MapControllers();
+app.MapGraphQL();
 
 app.Run();
