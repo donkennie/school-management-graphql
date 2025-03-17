@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
 using school_management_graphql.GraphQL.Mutations;
-using school_management_graphql.GraphQL.Queries;
+using school_management_graphql.GraphQL.Types;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,7 @@ builder.Services.AddScoped<IStudentService, StudentService>();*/
 
 builder.Services
  .AddGraphQLServer()
- .AddQueryType<Query>()
+ .AddQueryType<QueryType>()
  .AddMutationType<Mutation>();
 // Add services to the container.
 

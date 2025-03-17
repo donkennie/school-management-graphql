@@ -18,7 +18,8 @@ namespace school_management_graphql.GraphQL.Mutations
                     LastName = input.LastName,
                     Email = input.Email,
                     Phone = input.Phone,
-                    Bio = input.Bio
+                    Bio = input.Bio,
+                    DepartmentId = input.DepartmentId
                 };
                 context.Teachers.Add(teacher);
                 await context.SaveChangesAsync();
