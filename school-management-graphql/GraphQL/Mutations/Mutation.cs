@@ -28,7 +28,7 @@ namespace school_management_graphql.GraphQL.Mutations
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException?.Message); // THIS is usually where the real cause is
+                Console.WriteLine(ex.InnerException?.Message);
                 throw;
             }
         }

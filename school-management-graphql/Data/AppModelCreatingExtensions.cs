@@ -20,7 +20,7 @@ namespace school_management_graphql.Data
                 b.Ignore(t => t.Department);
                 b.HasOne(t => t.Department)
                     .WithMany(d => d.Teachers)
-                    .HasForeignKey(t => t.DepartmentId).IsRequired()
+                    .HasForeignKey(t => t.DepartmentId)//.IsRequired()
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
