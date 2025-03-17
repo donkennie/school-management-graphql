@@ -6,7 +6,7 @@ using school_management_graphql.GraphQL.Types;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddPooledDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 /*builder.Services.AddScoped<ITeacherService, TeacherService>();
@@ -17,6 +17,7 @@ builder.Services.AddScoped<IStudentService, StudentService>();*/
 
 builder.Services
  .AddGraphQLServer()
+ .RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
  .AddQueryType<QueryType>()
  .AddMutationType<Mutation>();
 // Add services to the container.

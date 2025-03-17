@@ -6,7 +6,7 @@ namespace school_management_graphql.GraphQL.Types
 {
     public class Query
     {
-
+        public List<TeacherType> Teachers { get; set; } = new();
         public TeacherType? Teacher { get; set; } = new();
 
         public async Task<List<Teacher>> GetTeachers([Service]
