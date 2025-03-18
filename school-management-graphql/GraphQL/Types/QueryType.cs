@@ -31,6 +31,17 @@ namespace school_management_graphql.GraphQL.Types
                 var teachers = await dbContext.Teachers.ToListAsync();
                 return teachers;
             });
+
+            descriptor.Field(x => x.Departments)
+             .Description("This is the list of departments in the school.")
+             .Type<ListType<DepartmentType>>()
+             .Resolve(async context =>
+             {
+                 var dbContextFactory = context.Service<IDbContextFactory<AppDbContext>>();
+                 await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+                 var departments = await dbContext.Departments.ToListAsync();
+                 return departments;
+             });
         }
     }
 }

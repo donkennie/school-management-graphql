@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
 using school_management_graphql.GraphQL.Mutations;
 using school_management_graphql.GraphQL.Types;
+using school_management_graphql.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,15 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPooledDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-/*builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<ISchoolRoomService, SchoolRoomService>();
 builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 builder.Services.AddScoped<IFurnitureService, FurnitureService>();
-builder.Services.AddScoped<IStudentService, StudentService>();*/
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services
  .AddGraphQLServer()
- .RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
+ //.RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
+ //.RegisterService<ITeacherService>()
  .AddQueryType<QueryType>()
  .AddMutationType<Mutation>();
 // Add services to the container.

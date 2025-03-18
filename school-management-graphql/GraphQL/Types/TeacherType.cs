@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
+using school_management_graphql.GraphQL.DataLoaders;
 using school_management_graphql.Models;
 
 namespace school_management_graphql.GraphQL.Types
@@ -22,4 +23,14 @@ namespace school_management_graphql.GraphQL.Types
         }
     }
 
+
+    public class TeacherResolvers
+    {
+        public async Task<Department> GetDepartment([Parent] Teacher teacher, DepartmentByTeacherIdBatchDataLoader
+        departmentByTeacherIdBatchDataLoader, CancellationToken cancellationToken)
+        {
+            var department = await departmentByTeacherIdBatchDataLoader.LoadAsync(teacher.DepartmentId, cancellationToken);
+            return department;
+        }
+    }
 }
