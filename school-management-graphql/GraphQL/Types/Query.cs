@@ -12,6 +12,10 @@ namespace school_management_graphql.GraphQL.Types
 
         public List<DepartmentType> Departments { get; set; } = new();
 
+        public List<SchoolRoomType> SchoolRooms { get; set; } = new();
+
+        public List<SchoolItemType> SchoolItems { get; set; } = new();
+
         public async Task<List<Teacher>> GetTeachers([Service]
         AppDbContext context) =>
                 await context.Teachers.ToListAsync();

@@ -21,6 +21,8 @@ builder.Services
  //.RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
  //.RegisterService<ITeacherService>()
  .AddQueryType<QueryType>()
+    .AddType<LabRoomType>()
+    .AddType<ClassroomType>()
  .AddMutationType<Mutation>();
 // Add services to the container.
 

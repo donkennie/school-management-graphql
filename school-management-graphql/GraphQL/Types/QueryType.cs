@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
+using school_management_graphql.Services;
 
 namespace school_management_graphql.GraphQL.Types
 {
@@ -42,6 +43,38 @@ namespace school_management_graphql.GraphQL.Types
                  var departments = await dbContext.Departments.ToListAsync();
                  return departments;
              });
+
+            descriptor.Field(x => x.SchoolRooms)
+           .Description("This is the list of school rooms in the school.")
+           .Type<ListType<SchoolRoomType>>()
+           .Resolve(async context =>
+           {
+               var service = context.Service<ISchoolRoomService>();
+               var schoolRooms = await service.GetSchoolRoomsAsync();
+               return schoolRooms;
+           });
+
+
+            descriptor.Field(x => x.SchoolItems)
+             .Description("This is the list of school items in the school.")
+             .Type<ListType<SchoolItemType>>()
+             .Resolve(async context =>
+             {
+                 var equipmentService = context.
+                  Service<IEquipmentService>();
+                 var furnitureService = context.
+         Service<IFurnitureService>();
+                 var equipmentTask = equipmentService.
+         GetEquipmentListAsync();
+                 var furnitureTask = furnitureService.
+         GetFurnitureListAsync();
+                 await Task.WhenAll(equipmentTask, furnitureTask);
+                 var schoolItems = new List<object>();
+                 schoolItems.AddRange(equipmentTask.Result);
+                 schoolItems.AddRange(furnitureTask.Result);
+                 return schoolItems;
+             });
+
         }
     }
 }
