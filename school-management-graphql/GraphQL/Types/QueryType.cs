@@ -75,6 +75,17 @@ namespace school_management_graphql.GraphQL.Types
                  return schoolItems;
              });
 
+            descriptor.Field(x => x.Students)
+           .Description("This is the list of students in the school.")
+           .UseFiltering()
+           .Resolve(async context =>
+           {
+               var dbContextFactory = context.Service<IDbContextFactory<AppDbContext>>();
+               var dbContext = await dbContextFactory.CreateDbContextAsync();
+               var students = dbContext.Students.AsQueryable();
+               return students;
+           });
+
         }
     }
 }

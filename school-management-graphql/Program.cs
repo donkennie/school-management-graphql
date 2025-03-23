@@ -23,6 +23,7 @@ builder.Services
  .AddQueryType<QueryType>()
     .AddType<LabRoomType>()
     .AddType<ClassroomType>()
+    .AddFiltering()
  .AddMutationType<Mutation>();
 // Add services to the container.
 
