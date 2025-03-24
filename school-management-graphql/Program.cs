@@ -18,13 +18,13 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services
  .AddGraphQLServer()
- //.RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
- //.RegisterService<ITeacherService>()
- .AddQueryType<QueryType>()
+    //.RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
+    //.RegisterService<ITeacherService>()
+    .AddQueryType<QueryType>()
     .AddType<LabRoomType>()
     .AddType<ClassroomType>()
     .AddFiltering()
- .AddMutationType<Mutation>();
+    .AddMutationType<Mutation>();
 // Add services to the container.
 
 //builder.Services.AddControllers();
