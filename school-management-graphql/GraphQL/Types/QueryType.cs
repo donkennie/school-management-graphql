@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
 using school_management_graphql.GraphQL.Filters;
+using school_management_graphql.GraphQL.Sorts;
 using school_management_graphql.Models;
 using school_management_graphql.Services;
 
@@ -94,6 +95,7 @@ namespace school_management_graphql.GraphQL.Types
             descriptor.Field(x => x.StudentsWithCustomFilter)
            .Description("This is the list of students in the school.")
            .UseFiltering<CustomStudentFilterType>()
+           .UseSorting<StudentSortType>()
            .Resolve(async context =>
            {
                var service = context.Service<IStudentService>();
