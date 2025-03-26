@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HotChocolate.Data.Filters;
+using Microsoft.EntityFrameworkCore;
 using school_management_graphql.Data;
+using school_management_graphql.GraphQL.Filters;
+using school_management_graphql.Models;
 using school_management_graphql.Services;
 
 namespace school_management_graphql.GraphQL.Types
@@ -60,15 +63,16 @@ namespace school_management_graphql.GraphQL.Types
              .Type<ListType<SchoolItemType>>()
              .Resolve(async context =>
              {
-                 var equipmentService = context.
-                  Service<IEquipmentService>();
-                 var furnitureService = context.
-         Service<IFurnitureService>();
-                 var equipmentTask = equipmentService.
-         GetEquipmentListAsync();
-                 var furnitureTask = furnitureService.
-         GetFurnitureListAsync();
+                 var equipmentService = context.Service<IEquipmentService>();
+
+                 var furnitureService = context.Service<IFurnitureService>();
+
+                 var equipmentTask = equipmentService.GetEquipmentListAsync();
+
+                 var furnitureTask = furnitureService.GetFurnitureListAsync();
+
                  await Task.WhenAll(equipmentTask, furnitureTask);
+
                  var schoolItems = new List<object>();
                  schoolItems.AddRange(equipmentTask.Result);
                  schoolItems.AddRange(furnitureTask.Result);
@@ -76,16 +80,62 @@ namespace school_management_graphql.GraphQL.Types
              });
 
             descriptor.Field(x => x.Students)
+                .Description("This is the list of students in the school.")
+                .UseFiltering()
+                .Resolve(async context =>
+               {
+                   var dbContextFactory = context.Service<IDbContextFactory<AppDbContext>>();
+                   var dbContext = await dbContextFactory.CreateDbContextAsync();
+                   var students = dbContext.Students.AsQueryable();
+                   return students;
+               });
+
+
+            descriptor.Field(x => x.StudentsWithCustomFilter)
            .Description("This is the list of students in the school.")
-           .UseFiltering()
+           .UseFiltering<CustomStudentFilterType>()
            .Resolve(async context =>
            {
-               var dbContextFactory = context.Service<IDbContextFactory<AppDbContext>>();
-               var dbContext = await dbContextFactory.CreateDbContextAsync();
-               var students = dbContext.Students.AsQueryable();
-               return students;
-           });
+               var service = context.Service<IStudentService>();
 
+               // The following code uses the custom filter.
+               var filter = context.GetFilterContext()?.ToDictionary();
+               if (filter != null && filter.ContainsKey("groupId"))
+               {
+                   var groupFilter = filter["groupId"]! as Dictionary<string, object>;
+                   if (groupFilter != null && groupFilter.ContainsKey("eq"))
+                   {
+                       if (!Guid.TryParse(groupFilter["eq"].ToString(), out var groupId))
+                       {
+                           throw new ArgumentException("Invalid group id", nameof(groupId));
+                       }
+
+                       var students = await service.GetStudentsByGroupIdAsync(groupId);
+                       return students;
+                   }
+
+                   if (groupFilter != null && groupFilter.ContainsKey("in"))
+                   {
+                       if (groupFilter["in"] is not IEnumerable<string> groupIds)
+                       {
+                           throw new ArgumentException("Invalid group ids", nameof(groupIds));
+                       }
+
+                       groupIds = groupIds.ToList();
+                       if (groupIds.Any())
+                       {
+                           var students =
+                               await service.GetStudentsByGroupIdsAsync(groupIds
+                                   .Select(x => Guid.Parse(x.ToString())).ToList());
+                           return students;
+                       }
+                       return new List<Student>();
+
+                   }
+               }
+               var allStudents = await service.GetStudentsAsync();
+               return allStudents;
+           });
         }
     }
 }

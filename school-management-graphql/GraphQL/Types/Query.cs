@@ -18,6 +18,8 @@ namespace school_management_graphql.GraphQL.Types
 
         public List<Student> Students { get; set; } = new();
 
+        public List<Student> StudentsWithCustomFilter { get; set; } = new();
+
         public async Task<List<Teacher>> GetTeachers([Service]
         AppDbContext context) =>
                 await context.Teachers.ToListAsync();

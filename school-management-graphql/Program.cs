@@ -18,7 +18,7 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services
  .AddGraphQLServer()
-    //.RegisterDbContext<AppDbContext>(DbContextKind.Pooled)
+    //.RegisterDbContext<AppDbContext>()
     //.RegisterService<ITeacherService>()
     .AddQueryType<QueryType>()
     .AddType<LabRoomType>()
